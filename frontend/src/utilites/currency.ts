@@ -1,11 +1,33 @@
 export const formatCurrency = (value: number | string, currency = 'USD') => {
+    // Corrigir códigos de moeda inválidos
+    let correctedCurrency = currency;
+    if (currency === 'BLR' || currency === 'blr') {
+        correctedCurrency = 'BRL';  // Corrigir BLR para BRL
+    }
+
+    const symbol = getCurrencySymbol(correctedCurrency);
+
     const formatter = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: currency,
         minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
     });
 
-    return formatter.format(value as number);
+    const formattedValue = formatter.format(value as number);
+
+    // Para moedas que usam símbolo antes do valor (como $, €, £, R$)
+    const prefixSymbols = ['$', '€', '£', 'R$', '¥', '₹', '₽', '₩', '฿', 'Rp', '₱', '₫', '৳', '₨', '₪', '₦', '₵', '₸', 'Br', '$U', '₣'];
+
+    if (prefixSymbols.includes(symbol)) {
+        return `${symbol}${formattedValue}`;
+    }
+
+    // Para moedas que usam símbolo depois do valor (como kr, zł, lei)
+    return `${formattedValue} ${symbol}`;
+}
+
+// Função adicional para garantir formatação correta em botões
+export const formatCurrencyForButton = (value: number | string, currency = 'USD') => {
+    return formatCurrency(value, currency).replace(/BLR/gi, '').trim();
 }
 
 export const getCurrencySymbol = (currencyCode: string): string => {
