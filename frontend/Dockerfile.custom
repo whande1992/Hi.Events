@@ -1,0 +1,53 @@
+# Multi-stage build para otimizar o tamanho da imagem
+FROM node:24.6.0-alpine as build-stage
+
+# Definir diretório de trabalho
+WORKDIR /app
+
+# Instalar yarn
+RUN apk add --no-cache yarn
+
+# Copiar arquivos de dependências
+COPY package.json yarn.lock ./
+
+# Instalar dependências
+RUN yarn install --frozen-lockfile
+
+# Copiar código fonte
+COPY . .
+
+# Build da aplicação
+RUN yarn build
+
+# Estágio de produção
+FROM node:24.6.0-alpine
+
+# Definir diretório de trabalho
+WORKDIR /app
+
+# Instalar yarn
+RUN apk add --no-cache yarn
+
+# Copiar arquivos de dependências
+COPY package.json yarn.lock ./
+
+# Instalar TODAS as dependências (não apenas as de produção) porque o server.js precisa do vite
+RUN yarn install --frozen-lockfile
+
+# Copiar aplicação buildada do estágio de build
+COPY --from=build-stage /app/dist ./dist
+COPY --from=build-stage /app/server.js ./
+COPY --from=build-stage /app/src ./src
+
+# Copiar entrypoint do docker
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Expor porta
+EXPOSE 5678
+
+# Definir entrypoint
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+# Iniciar a aplicação
+CMD ["yarn", "start"]

@@ -1,0 +1,23 @@
+FROM node:24.6.0-alpine
+
+WORKDIR /app
+
+RUN apk add --no-cache yarn
+
+COPY package.json yarn.lock ./
+
+RUN yarn install
+
+COPY . .
+
+RUN yarn build
+
+# Copiar o entrypoint
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+EXPOSE 5678
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+CMD ["yarn", "start"]
