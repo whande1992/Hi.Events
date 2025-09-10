@@ -98,15 +98,15 @@ class AttendeesExport implements FromCollection, WithHeadings, WithMapping, With
             $attendee->getStatus(),
             $attendee->getCheckIn() ? 'Yes' : 'No',
             $attendee->getCheckIn()
-                ? Carbon::parse($attendee->getCheckIn()->getCreatedAt())->format('Y-m-d H:i:s')
+                ? Carbon::parse($attendee->getCheckIn()->getCreatedAt())->format('d/m/Y H:i:s')
                 : '',
             $attendee->getProductId(),
             $ticketName,
             $attendee->getEventId(),
             $attendee->getPublicId(),
             $attendee->getShortId(),
-            Carbon::parse($attendee->getCreatedAt())->format('Y-m-d H:i:s'),
-            Carbon::parse($attendee->getUpdatedAt())->format('Y-m-d H:i:s'),
+            Carbon::parse($attendee->getCreatedAt())->format('d/m/Y H:i:s'),
+            Carbon::parse($attendee->getUpdatedAt())->format('d/m/Y H:i:s'),
             $attendee->getNotes(),
         ], $answers->toArray());
     }

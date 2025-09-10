@@ -99,16 +99,15 @@ class OrdersExport implements FromCollection, WithHeadings, WithMapping, WithSty
             $order->getPaymentStatus(),
             $order->getRefundStatus(),
             $order->getCurrency(),
-            Carbon::parse($order->getCreatedAt())->format('Y-m-d H:i:s'),
+            Carbon::parse($order->getCreatedAt())->format('d/m/Y H:i:s'),
             $order->getPublicId(),
             $order->getPaymentProvider(),
             $order->isPartiallyRefunded(),
             $order->isFullyRefunded(),
             $order->isFreeOrder(),
-            $order->getIsManuallyCreated(),
-            $order->getBillingAddressString(),
-            $order->getNotes(),
-            $order->getPromoCode(),
+            $order->getIsManuallyCreated() ? 'Yes' : 'No',
+            $order->getBillingAddress(),
+            $order->getPromoCode()?->getCode() ?? '',
         ], $answers->toArray());
     }
 

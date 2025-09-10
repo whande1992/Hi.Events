@@ -57,8 +57,8 @@ class AffiliatesExport implements FromCollection, WithHeadings, WithMapping, Wit
             $affiliate->getTotalSales(),
             $affiliate->getTotalSalesGross(),
             $affiliate->getStatus(),
-            Carbon::parse($affiliate->getCreatedAt())->format('Y-m-d H:i:s'),
-            Carbon::parse($affiliate->getUpdatedAt())->format('Y-m-d H:i:s'),
+            Carbon::parse($affiliate->getCreatedAt())->format('d/m/Y H:i:s'),
+            Carbon::parse($affiliate->getUpdatedAt())->format('d/m/Y H:i:s'),
         ];
     }
 
